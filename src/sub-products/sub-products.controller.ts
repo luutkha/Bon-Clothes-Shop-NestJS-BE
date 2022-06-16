@@ -7,10 +7,12 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateSubProductDto } from './dto/create-sub-product.dto';
 import { UpdateSubProductDto } from './dto/update-sub-product.dto';
 import { SubProductsService } from './sub-products.service';
 
+@ApiTags('sub-products')
 @Controller('sub-products')
 export class SubProductsController {
   constructor(private readonly subProductsService: SubProductsService) {}
