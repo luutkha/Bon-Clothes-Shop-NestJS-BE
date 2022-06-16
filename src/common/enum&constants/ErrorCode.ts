@@ -1,0 +1,4 @@
+export enum ErrorEnum {
+  OBJECT_NOT_FOUND = 'OBJECT_NOT_FOUND',
+  SOMETHING_WRONG = 'SOMETHING_WRONG',
+}
