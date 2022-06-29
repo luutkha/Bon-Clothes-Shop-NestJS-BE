@@ -17,14 +17,25 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async findOne(id: string): Promise<User | string> {
+  async findOne(id: string): Promise<User> {
     const user = await this.usersRepository.findOne({
-      where: { id: parseInt(id) },
+      where: { username: id },
     });
     if (user) {
       return user;
     } else {
-      return 'Can not find user with id = ' + id;
+      return null;
+    }
+  }
+
+  async checkUserNameExists(userName: string): Promise<boolean> {
+    const user = await this.usersRepository.findOne({
+      where: { username: userName },
+    });
+    if (user) {
+      return true;
+    } else {
+      return false;
     }
   }
 

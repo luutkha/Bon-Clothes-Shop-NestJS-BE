@@ -16,6 +16,10 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronService } from './cron/cron.service';
 import { ConfigModule } from '@nestjs/config';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
+import { ElasticSearchModule } from './elastic-search/elastic-search.module';
+import { AuthModule } from './auth/auth.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -67,6 +71,12 @@ import { ConfigModule } from '@nestjs/config';
     ProductTypesModule,
 
     SendMailsModule,
+
+    ElasticSearchModule,
+
+    AuthModule,
+
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService, CronService],
