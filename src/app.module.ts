@@ -19,17 +19,32 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: process.env.MYSQL_HOST,
+    //   port: parseInt(process.env.MYSQL_PORT),
+    //   username: 'root',
+    //   password: process.env.MYSQL_ROOT_PASSWORD,
+    //   database: process.env.MYSQL_DB_NAME,
+    //   entities: [User, Product, SubProduct, ProductType],
+    //   synchronize: true,
+    //   retryAttempts: 2,
+    // }),
+
+    // un-comment below if you need run on local
+
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.MYSQL_HOST,
-      port: parseInt(process.env.MYSQL_PORT),
+      host: 'localhost',
+      port: 3306,
       username: 'root',
-      password: process.env.MYSQL_ROOT_PASSWORD,
-      database: process.env.MYSQL_DB_NAME,
+      password: 'sapassword',
+      database: 'bon_clothes_shop_db',
       entities: [User, Product, SubProduct, ProductType],
       synchronize: true,
       retryAttempts: 2,
     }),
+
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',

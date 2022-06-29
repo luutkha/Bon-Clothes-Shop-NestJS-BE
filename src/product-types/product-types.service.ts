@@ -19,7 +19,7 @@ export class ProductTypesService {
     const dummyTypes = [
       'Quần ống suông',
       'Quần ống loe',
-      ' quần da',
+      'quần da',
       'quần đùi',
       'quần lửng',
       'quần jeans',
@@ -31,7 +31,11 @@ export class ProductTypesService {
       productType.name = this.stringHelper
         .removeVietnameseTones(t)
         .replace(/ /g, '');
-      this.productTypeRepository.save(productType);
+      try {
+        this.productTypeRepository.save(productType);
+      } catch (error) {
+        return error;
+      }
     });
     return 'Import data success';
   }

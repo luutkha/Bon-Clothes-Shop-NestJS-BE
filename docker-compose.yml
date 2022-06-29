@@ -1,17 +1,23 @@
 version: "3.5"
 services:
   db:
-      build: ./database
-      image: mysql:5.7
-      container_name: ${MYSQL_HOST}
-      volumes:
-        - ./database/data:/var/lib/mysql
-      ports:
-        - "${MYSQL_PORT}:${MYSQL_PORT}"
-      environment:
-        MYSQL_TCP_PORT: ${MYSQL_PORT}
-        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-        MYSQL_DATABASE: ${MYSQL_DB_NAME}   
+    build: ./database
+    image: mysql:5.7
+    container_name: ${MYSQL_HOST}
+    volumes:
+      - ./database/data:/var/lib/mysql
+    command:
+      [
+        "mysqld",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_bin",
+      ]
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
+    environment:
+      MYSQL_TCP_PORT: ${MYSQL_PORT}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME}   
   api:
     build:
       dockerfile: Dockerfile

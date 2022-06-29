@@ -8,11 +8,14 @@ import { UsersModule } from './users/users.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
     }),
   );
+
+  // config swagger
   const swaggerConfig = new DocumentBuilder()
     .setTitle('BonClothes API')
     .setDescription('Make this for learn somethings')
@@ -23,6 +26,9 @@ async function bootstrap() {
     include: [ProductsModule, ProductTypesModule, UsersModule],
   });
   SwaggerModule.setup('api', app, bonClothesDocument);
+
+  // config cors
+  app.enableCors();
 
   await app.listen(3000);
 }
