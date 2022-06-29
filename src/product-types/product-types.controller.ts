@@ -21,6 +21,10 @@ export class ProductTypesController {
   create(@Body() createProductTypeDto: CreateProductTypeDto) {
     return this.productTypesService.create(createProductTypeDto);
   }
+  @Post('/import')
+  importDummyData() {
+    return this.productTypesService.importDummyData();
+  }
 
   @Get()
   findAll() {

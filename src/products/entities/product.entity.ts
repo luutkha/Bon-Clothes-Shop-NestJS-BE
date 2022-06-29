@@ -1,3 +1,4 @@
+import { BaseEntity } from 'src/base-entity/entities/base-entity.entity';
 import { ProductType } from 'src/product-types/entities/product-type.entity';
 import { SubProduct } from 'src/sub-products/entities/sub-product.entity';
 import {
@@ -9,7 +10,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Product {
+export class Product extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
@@ -23,8 +24,6 @@ export class Product {
 
   @OneToMany(() => SubProduct, (sub) => sub.product, {
     cascade: true,
-    // onDelete: 'CASCADE',
-    // onUpdate: 'CASCADE',
   })
   subProducts: SubProduct[];
 }

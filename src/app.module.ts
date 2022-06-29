@@ -13,18 +13,22 @@ import { ProductTypesModule } from './product-types/product-types.module';
 import { ProductType } from './product-types/entities/product-type.entity';
 import { SendMailsModule } from './send-mails/send-mails.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronService } from './cron/cron.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
+      host: process.env.MYSQL_HOST,
+      port: parseInt(process.env.MYSQL_PORT),
       username: 'root',
-      password: 'sapassword',
-      database: 'bonclothes',
+      password: process.env.MYSQL_ROOT_PASSWORD,
+      database: process.env.MYSQL_DB_NAME,
       entities: [User, Product, SubProduct, ProductType],
       synchronize: true,
+      retryAttempts: 2,
     }),
     MailerModule.forRoot({
       transport: {
@@ -37,6 +41,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
         },
       },
     }),
+    ConfigModule.forRoot(),
+    ScheduleModule.forRoot(),
     UsersModule,
 
     ProductsModule,
@@ -48,7 +54,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     SendMailsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CronService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

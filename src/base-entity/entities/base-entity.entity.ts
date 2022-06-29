@@ -1,10 +1,10 @@
-import { Column } from 'typeorm';
+import { Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-export class BaseEntity {
-  @Column()
+export abstract class BaseEntity {
+  @CreateDateColumn()
   createdDate: Date;
-  @Column()
+  @UpdateDateColumn()
   updatedDate: Date;
-  @Column()
+  @Column({ default: false })
   isDeteled: boolean;
 }
