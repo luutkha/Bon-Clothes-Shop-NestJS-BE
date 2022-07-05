@@ -7,4 +7,6 @@ export abstract class BaseEntity {
   updatedDate: Date;
   @Column({ default: false })
   isDeteled: boolean;
+  @Column({ default: false })
+  isActive: boolean;
 }

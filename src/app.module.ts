@@ -20,6 +20,8 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ElasticSearchModule } from './elastic-search/elastic-search.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
+import { OtpsModule } from './otps/otps.module';
+import { Otp } from './otps/entities/otp.entity';
 
 @Module({
   imports: [
@@ -44,7 +46,7 @@ import { RolesModule } from './roles/roles.module';
       username: 'root',
       password: 'sapassword',
       database: 'bon_clothes_shop_db',
-      entities: [User, Product, SubProduct, ProductType],
+      entities: [User, Product, SubProduct, ProductType, Otp],
       synchronize: true,
       retryAttempts: 2,
     }),
@@ -77,6 +79,8 @@ import { RolesModule } from './roles/roles.module';
     AuthModule,
 
     RolesModule,
+
+    OtpsModule,
   ],
   controllers: [AppController],
   providers: [AppService, CronService],

@@ -1,16 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NumberHelper } from 'src/common/function/NumberHelper';
 import { Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+  private readonly numberHelper = new NumberHelper();
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
 
-  async create(user: User): Promise<User> {
+  async create(user: CreateUserDto): Promise<User> {
+    // const otp
     return await this.usersRepository.save(user);
   }
   findAll(): Promise<User[]> {
@@ -32,9 +37,12 @@ export class UsersService {
     const user = await this.usersRepository.findOne({
       where: { username: userName },
     });
+
     if (user) {
+      this.logger.error(`user with username: ${userName} exists`);
       return true;
     } else {
+      this.logger.log('user NOT exists');
       return false;
     }
   }
