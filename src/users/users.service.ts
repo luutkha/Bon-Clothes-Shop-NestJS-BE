@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NumberHelper } from 'src/common/function/NumberHelper';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -8,7 +7,6 @@ import { User } from './entities/user.entity';
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
-  private readonly numberHelper = new NumberHelper();
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,

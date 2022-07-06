@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Post,
   UseGuards,
@@ -12,8 +13,13 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ErrorEnum } from 'src/common/enum&constants/ErrorCode';
+import { OtpTypeEnum } from 'src/common/enum&constants/OtpType.enum';
+import { NumberHelper } from 'src/common/function/NumberHelper';
 import { PasswordHelper } from 'src/common/function/PasswordHelper';
 import { ResponseHelper } from 'src/common/function/ResponseHelper';
+import { CreateOtpDto } from 'src/otps/dto/create-otp.dto';
+import { Otp } from 'src/otps/entities/otp.entity';
+import { OtpsService } from 'src/otps/otps.service';
 import { SendMailsService } from 'src/send-mails/send-mails.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -24,9 +30,12 @@ import { UsersService } from './users.service';
 export class UsersController {
   private responseHelper = new ResponseHelper();
   private passwordHelper = new PasswordHelper();
+  private numberHelper = new NumberHelper();
+
   constructor(
     private readonly usersService: UsersService,
     private readonly mailService: SendMailsService,
+    private readonly otpService: OtpsService,
   ) {}
 
   @Post('/register')
@@ -37,9 +46,21 @@ export class UsersController {
     );
     if (checkUserExists === false) {
       user.password = await this.passwordHelper.hashPassword(user.password);
-      return this.usersService.create(user);
+      const finalUser = await this.usersService.create(user);
+      const otp = this.numberHelper.genRandomOTP();
+      const createOtpDto = new Otp();
+      createOtpDto.otp = otp;
+      createOtpDto.type = OtpTypeEnum.REGISTER;
+      createOtpDto.user = finalUser;
+      this.otpService.saveOTPtoDB(createOtpDto);
+      if (
+        !this.mailService.sendMailWithOTP(user.email, otp, OtpTypeEnum.REGISTER)
+      ) {
+        return this.responseHelper.failResponse({}, ErrorEnum.SEND_MAIL_ERROR);
+      }
+      return this.responseHelper.successResponse(finalUser);
     } else {
-      return this.responseHelper.failResponse(null, ErrorEnum.USERNAME_EXISTS);
+      return this.responseHelper.failResponse({}, ErrorEnum.USERNAME_EXISTS);
     }
   }
 

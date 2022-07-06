@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { OtpsService } from './otps.service';
-import { OtpsController } from './otps.controller';
-import { Otp } from './entities/otp.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Otp } from './entities/otp.entity';
+import { OtpsController } from './otps.controller';
+import { OtpsService } from './otps.service';
 
 @Module({
   controllers: [OtpsController],

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateOtpDto } from './dto/create-otp.dto';
 import { UpdateOtpDto } from './dto/update-otp.dto';
 import { Otp } from './entities/otp.entity';
 
@@ -11,8 +10,8 @@ export class OtpsService {
     @InjectRepository(Otp)
     private otpRepository: Repository<Otp>,
   ) {}
-  async saveOTPtoDB(createOtpDto: CreateOtpDto) {
-    return await this.otpRepository.save(createOtpDto);
+  async saveOTPtoDB(otp: Otp) {
+    return await this.otpRepository.save(otp);
   }
 
   findAll() {
