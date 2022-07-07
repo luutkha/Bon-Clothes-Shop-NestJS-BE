@@ -17,12 +17,12 @@ export class SendMailsService {
     return 'Gửi mail oke rồi đó!';
   }
 
-  //TODO
   async sendMailWithOTP(email: string, otp: string, type: number) {
     try {
       this.logger.log(`Start send mail to ${email}`);
       switch (type) {
         case 1:
+          this.logger.log(`Send mail: type = ${type}`);
           await this.mailerService.sendMail({
             to: email,
             subject: EmailEnum.REGISTER_OTP_TITLE,

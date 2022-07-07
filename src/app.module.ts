@@ -49,6 +49,7 @@ import { Otp } from './otps/entities/otp.entity';
       entities: [User, Product, SubProduct, ProductType, Otp],
       synchronize: true,
       retryAttempts: 2,
+      logging: ['query', 'error'],
     }),
 
     MailerModule.forRoot({

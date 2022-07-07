@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Logger,
   Param,
   Post,
   UseGuards,
@@ -17,12 +16,10 @@ import { OtpTypeEnum } from 'src/common/enum&constants/OtpType.enum';
 import { NumberHelper } from 'src/common/function/NumberHelper';
 import { PasswordHelper } from 'src/common/function/PasswordHelper';
 import { ResponseHelper } from 'src/common/function/ResponseHelper';
-import { CreateOtpDto } from 'src/otps/dto/create-otp.dto';
 import { Otp } from 'src/otps/entities/otp.entity';
 import { OtpsService } from 'src/otps/otps.service';
 import { SendMailsService } from 'src/send-mails/send-mails.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -52,7 +49,7 @@ export class UsersController {
       createOtpDto.otp = otp;
       createOtpDto.type = OtpTypeEnum.REGISTER;
       createOtpDto.user = finalUser;
-      this.otpService.saveOTPtoDB(createOtpDto);
+      this.otpService.saveNewOTPtoDB(createOtpDto);
       if (
         !this.mailService.sendMailWithOTP(user.email, otp, OtpTypeEnum.REGISTER)
       ) {
