@@ -1,27 +1,25 @@
+import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { DataSource } from 'typeorm';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entities/user.entity';
-import { ProductsModule } from './products/products.module';
-import { SubProductsModule } from './sub-products/sub-products.module';
-import { Product } from './products/entities/product.entity';
-import { SubProduct } from './sub-products/entities/sub-product.entity';
-import { ProductTypesModule } from './product-types/product-types.module';
-import { ProductType } from './product-types/entities/product-type.entity';
-import { SendMailsModule } from './send-mails/send-mails.module';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { ScheduleModule } from '@nestjs/schedule';
-import { CronService } from './cron/cron.service';
-import { ConfigModule } from '@nestjs/config';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
-import { ElasticSearchModule } from './elastic-search/elastic-search.module';
 import { AuthModule } from './auth/auth.module';
-import { RolesModule } from './roles/roles.module';
-import { OtpsModule } from './otps/otps.module';
+import { CronService } from './cron/cron.service';
 import { Otp } from './otps/entities/otp.entity';
+import { OtpsModule } from './otps/otps.module';
+import { ProductType } from './product-types/entities/product-type.entity';
+import { ProductTypesModule } from './product-types/product-types.module';
+import { Product } from './products/entities/product.entity';
+import { ProductsModule } from './products/products.module';
+import { RolesModule } from './roles/roles.module';
+import { SendMailsModule } from './send-mails/send-mails.module';
+import { SubProduct } from './sub-products/entities/sub-product.entity';
+import { SubProductsModule } from './sub-products/sub-products.module';
+import { User } from './users/entities/user.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -64,7 +62,9 @@ import { Otp } from './otps/entities/otp.entity';
       },
     }),
     ConfigModule.forRoot(),
+
     ScheduleModule.forRoot(),
+
     UsersModule,
 
     ProductsModule,
@@ -74,8 +74,6 @@ import { Otp } from './otps/entities/otp.entity';
     ProductTypesModule,
 
     SendMailsModule,
-
-    ElasticSearchModule,
 
     AuthModule,
 

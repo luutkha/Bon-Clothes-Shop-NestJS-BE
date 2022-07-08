@@ -15,7 +15,7 @@ export class CronService {
   // @Interval(1000)
   handleCron() {
     this.logger.debug(
-      'Every 30 minus in 9AM -> 20PM seconds. this func will be active. for test some func',
+      'Every 30 minus in 9AM -> 20PM. this func will be active. for test some func',
     );
     // this.logger.debug(this.numberHelper.genRandomOTP());
     this.logger.debug(this.timeHelper.getNow());
@@ -24,8 +24,8 @@ export class CronService {
   @Cron('0 */30 9-20 * * *')
   async cleanDatabase() {
     this.logger.debug(
-      'Every 30 minus in 9AM -> 20PM seconds. this func will be clean database',
+      'Every 30 minus in 9:00AM -> 8:00PM. this func will be clean database',
     );
-    const otps = await this.otpService.cleanOTPTable();
+    await this.otpService.cleanOTPTable();
   }
 }
