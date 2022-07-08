@@ -5,5 +5,5 @@ export enum OtpTypeEnum {
 }
 
 export enum OtpConst {
-  MINUS_EXPIRE_OTP = 2000000,
+  MINUS_EXPIRE_OTP = 2,
 }

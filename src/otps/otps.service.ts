@@ -5,7 +5,7 @@ import { ResponseEnum } from 'src/common/enum&constants/ResponseEnum';
 import { ResponseHelper } from 'src/common/function/ResponseHelper';
 import { TimeHelper } from 'src/common/function/TimeHelper';
 import { UsersService } from 'src/users/users.service';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { In, LessThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { VerifyOtpDTO } from './dto/verify-otp.dto';
 import { Otp } from './entities/otp.entity';
 
@@ -70,5 +70,23 @@ export class OtpsService {
     return this.responseHelper.successResponse({
       message: ResponseEnum.VERIFY_OTP_SUCCESS,
     });
+  }
+
+  async cleanOTPTable() {
+    const now = this.timeHelper.getNow();
+    const otpExpireExpected = this.timeHelper.addMinus(
+      now.toDate(),
+      -OtpConst.MINUS_EXPIRE_OTP,
+    );
+    const otps = await this.otpRepository.find({
+      where: {
+        isActive: true,
+        createdDate: LessThan(new Date(otpExpireExpected)),
+      }, // relations: ['user'],
+    });
+
+    await this.otpRepository.delete({ id: In(otps.map((otp) => otp.id)) });
+
+    return otps;
   }
 }

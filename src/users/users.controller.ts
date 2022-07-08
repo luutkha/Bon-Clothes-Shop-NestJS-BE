@@ -41,24 +41,23 @@ export class UsersController {
     const checkUserExists = await this.usersService.checkUserNameExists(
       user.username,
     );
+    let finalUser;
+    user.password = await this.passwordHelper.hashPassword(user.password);
     if (checkUserExists === false) {
-      user.password = await this.passwordHelper.hashPassword(user.password);
-      const finalUser = await this.usersService.create(user);
-      const otp = this.numberHelper.genRandomOTP();
-      const createOtpDto = new Otp();
-      createOtpDto.otp = otp;
-      createOtpDto.type = OtpTypeEnum.REGISTER;
-      createOtpDto.user = finalUser;
-      this.otpService.saveNewOTPtoDB(createOtpDto);
-      if (
-        !this.mailService.sendMailWithOTP(user.email, otp, OtpTypeEnum.REGISTER)
-      ) {
-        return this.responseHelper.failResponse({}, ErrorEnum.SEND_MAIL_ERROR);
-      }
-      return this.responseHelper.successResponse(finalUser);
-    } else {
-      return this.responseHelper.failResponse({}, ErrorEnum.USERNAME_EXISTS);
+      finalUser = await this.usersService.create(user);
+    } else finalUser = await this.usersService.findOne(user.username);
+    const otp = this.numberHelper.genRandomOTP();
+    const createOtpDto = new Otp();
+    createOtpDto.otp = otp;
+    createOtpDto.type = OtpTypeEnum.REGISTER;
+    createOtpDto.user = finalUser;
+    this.otpService.saveNewOTPtoDB(createOtpDto);
+    if (
+      !this.mailService.sendMailWithOTP(user.email, otp, OtpTypeEnum.REGISTER)
+    ) {
+      return this.responseHelper.failResponse({}, ErrorEnum.SEND_MAIL_ERROR);
     }
+    return this.responseHelper.successResponse(finalUser);
   }
 
   @Get()
