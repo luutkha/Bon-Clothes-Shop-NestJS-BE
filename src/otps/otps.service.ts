@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { OtpConst, OtpTypeEnum } from 'src/common/enum&constants/OtpType.enum';
+import { ResponseEnum } from 'src/common/enum&constants/ResponseEnum';
+import { ResponseHelper } from 'src/common/function/ResponseHelper';
 import { TimeHelper } from 'src/common/function/TimeHelper';
 import { UsersService } from 'src/users/users.service';
 import { MoreThanOrEqual, Repository } from 'typeorm';
@@ -9,6 +12,7 @@ import { Otp } from './entities/otp.entity';
 @Injectable()
 export class OtpsService {
   private timeHelper = new TimeHelper();
+  private responseHelper = new ResponseHelper();
   constructor(
     @InjectRepository(Otp)
     private otpRepository: Repository<Otp>,
@@ -19,29 +23,52 @@ export class OtpsService {
     return await this.otpRepository.save(otp);
   }
 
-  // TODO: create expire_date in otp entity
   async verifyOtp(verifyOtp: VerifyOtpDTO) {
     const now = this.timeHelper.getNow();
-    console.log(now);
+    const otpExpireExpected = this.timeHelper.addMinus(
+      now.toDate(),
+      -OtpConst.MINUS_EXPIRE_OTP,
+    );
+    const user = await this.userService.findOne(verifyOtp.username);
+
+    if (!user)
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Username not exists!',
+        },
+        HttpStatus.NOT_FOUND,
+      );
     const otps: Otp[] = await this.otpRepository.find({
       where: {
         otp: verifyOtp.otp,
         user: {
-          username: await (
-            await this.userService.findOne(verifyOtp.username)
-          ).username,
+          username: user.username,
         },
         isActive: true,
         type: verifyOtp.type,
-        // createdDate: MoreThanOrEqual(now),
+        createdDate: MoreThanOrEqual(new Date(otpExpireExpected)),
       },
-      relations: ['user'],
+      take: 1,
+      // relations: ['user'],
+      order: {
+        createdDate: 'DESC',
+      },
     });
-
-    return { otps: otps, time: now };
-  }
-
-  checkValideOTP(otp: Otp) {
-    return true;
+    if (otps.length < 1) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Otp not exists!',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    } else {
+      otps[0].isActive = false;
+      await this.otpRepository.update({ id: otps[0].id }, { isActive: false });
+    }
+    return this.responseHelper.successResponse({
+      message: ResponseEnum.VERIFY_OTP_SUCCESS,
+    });
   }
 }

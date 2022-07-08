@@ -3,3 +3,7 @@ export enum OtpTypeEnum {
   REGISTER = 1,
   RESET_PASSWORD = 2,
 }
+
+export enum OtpConst {
+  MINUS_EXPIRE_OTP = 2000000,
+}
